@@ -17,6 +17,8 @@ class UserController {
     async create(req, res) {
         try {
             const { name, username, password } = req.body;
+        
+           
             if (!name || !username || !password) {
                 return res.json({
                     error: true,
