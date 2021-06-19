@@ -5,6 +5,7 @@ const mongoDB = require('./src/databases/mongodb/index');
 const socketIO = require('socket.io');
 const shared = require('./src/shared');
 const MessageController = require('./src/controllers/MessageController');
+var bodyParser = require('body-parser')
 
 const app = express();
 
@@ -39,7 +40,8 @@ io.on('connection', socket => {
     });
 
 });
-
+var jsonParser = bodyParser.json()
+app.use(jsonParser)
 app.use('/', require('./src/routes'));
 
 server.listen('8081', () => {

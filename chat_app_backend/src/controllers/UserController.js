@@ -3,12 +3,13 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const jwtConfig = require('../config/jwt');
 const hash = require('../utils/hash');
-
+require('dotenv').config();
 function generateJwtToken(user){
+    const JWT_SECRET = process.env.JWT_SECRET;
     const { _id } = user;
     return jwt.sign({
         _id,
-    }, jwtConfig.secret);
+    }, JWT_SECRET);
 }
 
 
@@ -18,7 +19,7 @@ class UserController {
         try {
             const { name, username, password } = req.body;
         
-           
+            console.log(req.body);
             if (!name || !username || !password) {
                 return res.json({
                     error: true,
@@ -31,6 +32,7 @@ class UserController {
                 password,
             }
             const userExists = (await UserRepository.findByUsername(user.username)) != null;
+       
             if (userExists) {
                 return res.json({
                     error: true,
@@ -38,8 +40,10 @@ class UserController {
                 })
             }
             await UserRepository.create(user);
+            console.log("21321312321");
             const newUser = await UserRepository.findByUsername(user.username);
             const token = generateJwtToken(newUser);
+            console.log(token);
             user.password = undefined;
             return res.json({
                 user: newUser,
@@ -47,10 +51,12 @@ class UserController {
             })
 
         } catch (err) {
+            console.log(err.message)
             return res.json({
                 error: true,
                 errorMessage: "Ocorreu um erro. Tente novamente.",
                 err
+                
             })
         }
     }
