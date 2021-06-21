@@ -4,7 +4,6 @@ import 'package:chat_app/src/data/models/custom_error.dart';
 import 'package:chat_app/src/data/models/user.dart';
 import 'package:chat_app/src/data/repositories/login_repository.dart';
 import 'package:chat_app/src/screens/home/home_view.dart';
-import 'package:chat_app/src/utils/custom_shared_preferences.dart';
 import 'package:chat_app/src/utils/state_control.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';

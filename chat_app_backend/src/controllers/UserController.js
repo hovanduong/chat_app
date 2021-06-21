@@ -5,11 +5,10 @@ const jwtConfig = require('../config/jwt');
 const hash = require('../utils/hash');
 require('dotenv').config();
 function generateJwtToken(user){
-    const JWT_SECRET = process.env.JWT_SECRET;
     const { _id } = user;
     return jwt.sign({
         _id,
-    }, JWT_SECRET);
+    }, jwtConfig.secret);
 }
 
 
@@ -32,18 +31,18 @@ class UserController {
                 password,
             }
             const userExists = (await UserRepository.findByUsername(user.username)) != null;
-       
+            
             if (userExists) {
                 return res.json({
                     error: true,
                     errorMessage: "Nome de usuario ja cadastrado",
                 })
             }
+            console.log('2');
             await UserRepository.create(user);
-            console.log("21321312321");
+            console.log('1');
             const newUser = await UserRepository.findByUsername(user.username);
             const token = generateJwtToken(newUser);
-            console.log(token);
             user.password = undefined;
             return res.json({
                 user: newUser,
@@ -61,7 +60,7 @@ class UserController {
         }
     }
 
-    async login(req, res, next){
+    async login(req, res){
         try {
             const { username, password } = req.body;
             if (!username || !password) {
@@ -69,10 +68,12 @@ class UserController {
             }
             const user = await UserRepository.findByUsername(username);
             if (!user){
-                return res.json({ error: true, errorMessage: "Usuário ou senha inválidos" });
+                return res.json({ error: true, errorMessage: "Invalid username" });
             }
             if (!await bcrypt.compare(password, user.password)){
-                return res.json({ error: true, errorMessage: "Usuário ou senha inválidos" });
+                console.log(password);
+                console.log(user.password);
+                return res.json({ error: true, errorMessage: "Invalid password" });
             }
             const token = generateJwtToken(user);
             user.password = undefined;

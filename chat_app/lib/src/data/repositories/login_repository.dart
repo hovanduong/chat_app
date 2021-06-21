@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:chat_app/src/data/models/custom_error.dart';
 import 'package:chat_app/src/data/models/user.dart';
@@ -12,12 +13,15 @@ class LoginRepository {
   Future<dynamic> login(String username, String password) async {
     try {
       var body = jsonEncode({'username': username, 'password': password});
+      print(
+        '${MyUrls.serverUrl}/auth',
+      );
       var response = await http.post(
         '${MyUrls.serverUrl}/auth',
         body: body,
       );
       final dynamic loginResponse = jsonDecode(response.body);
-
+      log(response.body);
       if (loginResponse['error'] != null) {
         return CustomError.fromJson(loginResponse);
       }

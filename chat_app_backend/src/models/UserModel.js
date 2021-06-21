@@ -23,12 +23,12 @@ const UserSchema = mongoose.Schema({
     }
 });
 
-// UserSchema.pre('save', async function(next) {
+UserSchema.pre('save', async function(next) {
     
-//     const salt = await bcrypt.genSalt()
-//     const hash = await bcrypt.hash(this.password, salt);
-//     this.password = hash;
-//     next();
-// });
+    // const salt = await bcrypt.genSalt()
+    const hash = await bcrypt.hash(this.password, 10);
+    this.password = hash;
+    next();
+});
 
-module.exports = mongoose.model('Users1', UserSchema);
+module.exports = mongoose.model('User', UserSchema);
